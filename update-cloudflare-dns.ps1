@@ -113,7 +113,13 @@ if ($cloudflare_record_info_resposne.success -ne "True") {
 }
 
 ### Get the dns record id from response
-$dns_record_id = $cloudflare_record_info_resposne.result.id.Trim()
+if ($cloudflare_record_info_response.result.id -is [System.Array]) {
+    # If it's an array, take the first element and trim it
+    $dns_record_id = $cloudflare_record_info_response.result.id[0].Trim()
+} else {
+    # If it's not an array, just trim it
+    $dns_record_id = $cloudflare_record_info_response.result.id.Trim()
+}
 
 ### Push new dns record information to cloudflare's api
 $update_dns_record = @{
